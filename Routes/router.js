@@ -15,9 +15,16 @@ router.get("/",async(req,res)=>{
 })
 // inserting users 
 router.post("",async(req,res)=>{
-        const hide_password = await bcrypt.genSalt(10)
-        const hashedPasword = await bcrypt.hash(req.body.password,hide_password)
 try {
+
+    const hide_password = await bcrypt.genSalt(10)
+    const hashedPasword = await bcrypt.hash(req.body.password,hide_password)
+    const ifUserExist = await User.findOne({username: req.body.username})
+    if(ifUserExist){
+        res.status(404).json({message:"user already exists"})
+    } 
+
+    
     const newUser = await User.create({
         username :req.body.username,
         email: req.body.email,
